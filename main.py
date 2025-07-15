@@ -1,3 +1,8 @@
+from keep_alive import keep_alive
+
+keep_alive()  # запускаем веб-сервер для поддержания активности
+
+import os
 import webbrowser
 import time
 from telegram import (
@@ -15,7 +20,7 @@ from telegram.ext import (
 )
 from datetime import datetime, timedelta
 
-token = "7764601867:AAGRExOEz1fVNcdG-ND30PSkzE2GBYaUDQ8"
+token = os.getenv("TELEGRAM_TOKEN")  # Replit сам подставит токен из Secrets
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -207,7 +212,7 @@ async def button_clicked(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "sending":
         await query.edit_message_text(text="Ожидание отправки...")
         meetString = f"{meetStr[-33:-28]} - {meetStr[-6:-1]}"
-        
+
         if meetString in meets:
             await query.edit_message_text(
                 text="На данное время встреча уже запланирована!"
@@ -215,9 +220,7 @@ async def button_clicked(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             for part in partList:
                 if part[0] != 1181155172:
-                    partStr = (
-                        f"accept:{meetString}:{part[1]}"
-                    )
+                    partStr = f"accept:{meetString}:{part[1]}"
                     # проверяем размер строки (д.б. менее 64 байт)
                     print(len(partStr.encode("utf-8")))
                     okey = [[InlineKeyboardButton("Принять", callback_data=partStr)]]
